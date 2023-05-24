@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/grafana/grafana/pkg/bus"
+	"github.com/grafana/grafana/pkg/infra/log/logtest"
 	"github.com/grafana/grafana/pkg/infra/tracing"
 	"github.com/grafana/grafana/pkg/services/folder"
 	"github.com/grafana/grafana/pkg/services/folder/folderimpl"
@@ -36,6 +37,7 @@ func TestIntegrationUpdateAlertRules(t *testing.T) {
 		SQLStore:      sqlStore,
 		Cfg:           cfg.UnifiedAlerting,
 		FolderService: setupFolderService(t, sqlStore, cfg),
+		Logger:        &logtest.Fake{},
 	}
 	generator := models.AlertRuleGen(withIntervalMatching(store.Cfg.BaseInterval), models.WithUniqueID())
 
