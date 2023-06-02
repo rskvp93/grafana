@@ -44,7 +44,7 @@ interface Props extends Themeable2 {
 }
 
 interface State {
-  showContext: boolean;
+  highlightBackround: boolean;
   showDetails: boolean;
 }
 
@@ -57,17 +57,17 @@ interface State {
  */
 class UnThemedLogRow extends PureComponent<Props, State> {
   state: State = {
-    showContext: false,
+    highlightBackround: false,
     showDetails: false,
   };
 
   // we are debouncing the state change by 3 seconds to highlight the logline after the context closed.
   debouncedContextClose = debounce(() => {
-    this.setState({ showContext: false });
+    this.setState({ highlightBackround: false });
   }, 3000);
 
   onOpenContext = (row: LogRowModel) => {
-    this.setState({ showContext: true });
+    this.setState({ highlightBackround: true });
     this.props.onOpenContext(row, this.debouncedContextClose);
   };
 
@@ -137,12 +137,12 @@ class UnThemedLogRow extends PureComponent<Props, State> {
       app,
       styles,
     } = this.props;
-    const { showDetails, showContext } = this.state;
+    const { showDetails, highlightBackround } = this.state;
     const levelStyles = getLogLevelStyles(theme, row.logLevel);
     const { errorMessage, hasError } = checkLogsError(row);
     const logRowBackground = cx(styles.logsRow, {
       [styles.errorLogRow]: hasError,
-      [styles.contextBackground]: showContext,
+      [styles.highlightBackground]: highlightBackround,
     });
 
     const processedRow =

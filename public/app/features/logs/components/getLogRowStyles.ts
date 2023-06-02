@@ -72,7 +72,7 @@ export const getLogRowStyles = memoizeOne((theme: GrafanaTheme2) => {
       width: 100%;
       margin-bottom: ${theme.spacing(2.25)}; /* This is to make sure the last row's LogRowMenu is not cut off. */
     `,
-    contextBackground: css`
+    highlightBackground: css`
       background: ${hoverBgColor};
     `,
     logsRow: css`
