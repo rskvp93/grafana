@@ -557,6 +557,7 @@ class UnthemedLogs extends PureComponent<Props, State> {
                 app={CoreApp.Explore}
                 onLogRowHover={this.onLogRowHover}
                 onOpenContext={this.onOpenContext}
+                permalinkedRowId={this.props.panelState?.id}
               />
               {!loading && !hasData && !scanning && (
                 <div className={styles.noData}>
