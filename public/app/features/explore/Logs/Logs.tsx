@@ -332,6 +332,17 @@ class UnthemedLogs extends PureComponent<Props, State> {
     };
   };
 
+  onPermalinkClick = async (row: LogRowModel) => {
+    dispatch(
+      changePanelState(this.props.exploreId, 'logs', {
+        ...this.props.panelState,
+        id: row.uid,
+      })
+    );
+    appEvents.publish(new AbsoluteTimeEvent());
+    await createAndCopyShortLink(globalThis.location.href);
+  };
+
   checkUnescapedContent = memoizeOne((logRows: LogRowModel[]) => {
     return !!logRows.some((r) => r.hasUnescapedContent);
   });
@@ -557,6 +568,7 @@ class UnthemedLogs extends PureComponent<Props, State> {
                 app={CoreApp.Explore}
                 onLogRowHover={this.onLogRowHover}
                 onOpenContext={this.onOpenContext}
+                onPermalinkClick={this.onPermalinkClick}
                 permalinkedRowId={this.props.panelState?.id}
               />
               {!loading && !hasData && !scanning && (

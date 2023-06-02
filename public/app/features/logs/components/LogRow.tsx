@@ -38,6 +38,7 @@ interface Props extends Themeable2 {
   onClickHideField?: (key: string) => void;
   onLogRowHover?: (row?: LogRowModel) => void;
   onOpenContext: (row: LogRowModel, onClose: () => void) => void;
+  onPermalinkClick?: (row: LogRowModel) => Promise<void>;
   styles: LogRowStyles;
   permalinkedRowId?: string;
 }
@@ -105,6 +106,12 @@ class UnThemedLogRow extends PureComponent<Props, State> {
   onMouseLeave = () => {
     if (this.props.onLogRowHover) {
       this.props.onLogRowHover(undefined);
+    }
+  };
+
+  onPermalinkClick = async () => {
+    if (this.props.onPermalinkClick) {
+      await this.props.onPermalinkClick(this.props.row);
     }
   };
 
@@ -188,6 +195,7 @@ class UnThemedLogRow extends PureComponent<Props, State> {
               wrapLogMessage={wrapLogMessage}
               prettifyLogMessage={prettifyLogMessage}
               onOpenContext={this.onOpenContext}
+              onPermalinkClick={this.onPermalinkClick}
               app={app}
               styles={styles}
             />
