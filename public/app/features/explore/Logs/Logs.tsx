@@ -26,6 +26,7 @@ import {
   DataHoverClearEvent,
   EventBus,
   LogRowContextOptions,
+  ExploreLogsPanelState,
 } from '@grafana/data';
 import { reportInteraction } from '@grafana/runtime';
 import { DataQuery } from '@grafana/schema';
@@ -85,6 +86,7 @@ interface Props extends Themeable2 {
   addResultsToCache: () => void;
   clearCache: () => void;
   eventBus: EventBus;
+  panelState?: ExploreLogsPanelState;
 }
 
 interface State {

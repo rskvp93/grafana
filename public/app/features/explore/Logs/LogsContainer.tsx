@@ -206,6 +206,7 @@ class LogsContainer extends PureComponent<LogsContainerProps> {
             addResultsToCache={() => addResultsToCache(exploreId)}
             clearCache={() => clearCache(exploreId)}
             eventBus={this.props.eventBus}
+            panelState={this.props.panelState}
           />
         </LogsCrossFadeTransition>
       </>
@@ -228,6 +229,7 @@ function mapStateToProps(state: StoreState, { exploreId }: { exploreId: ExploreI
     absoluteRange,
     supplementaryQueries,
   } = item;
+  const panelState = item.panelsState.logs;
   const timeZone = getTimeZone(state.user);
   const logsVolume = supplementaryQueries[SupplementaryQueryType.LogsVolume];
 
@@ -247,6 +249,7 @@ function mapStateToProps(state: StoreState, { exploreId }: { exploreId: ExploreI
     range,
     absoluteRange,
     logsVolume,
+    panelState,
   };
 }
 
