@@ -50,6 +50,7 @@ interface LogsContainerProps extends PropsFromRedux {
   onStopScanning: () => void;
   eventBus: EventBus;
   splitOpenFn: SplitOpen;
+  scrollElement?: HTMLDivElement;
 }
 
 class LogsContainer extends PureComponent<LogsContainerProps> {
@@ -144,6 +145,7 @@ class LogsContainer extends PureComponent<LogsContainerProps> {
       addResultsToCache,
       clearCache,
       logsVolume,
+      scrollElement,
     } = this.props;
 
     if (!logRows) {
@@ -207,6 +209,7 @@ class LogsContainer extends PureComponent<LogsContainerProps> {
             clearCache={() => clearCache(exploreId)}
             eventBus={this.props.eventBus}
             panelState={this.props.panelState}
+            scrollElement={scrollElement}
           />
         </LogsCrossFadeTransition>
       </>

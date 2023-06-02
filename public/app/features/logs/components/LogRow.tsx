@@ -41,6 +41,7 @@ interface Props extends Themeable2 {
   onPermalinkClick?: (row: LogRowModel) => Promise<void>;
   styles: LogRowStyles;
   permalinkedRowId?: string;
+  scrollIntoView: (element: HTMLElement) => void;
 }
 
 interface State {
@@ -89,6 +90,7 @@ class UnThemedLogRow extends PureComponent<Props, State> {
       };
     });
   };
+  logLineRef: React.RefObject<HTMLTableRowElement>;
 
   renderTimeStamp(epochMs: number) {
     return dateTimeFormat(epochMs, {
@@ -109,9 +111,37 @@ class UnThemedLogRow extends PureComponent<Props, State> {
     }
   };
 
+  constructor(props: Props) {
+    super(props);
+    this.logLineRef = React.createRef();
+  }
+
+  componentDidMount() {
+    this.scrollToLogRow();
+  }
+
+  componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>): void {
+    if (
+      this.props.permalinkedRowId !== prevProps.permalinkedRowId &&
+      this.props.permalinkedRowId !== this.props.row.uid
+    ) {
+      this.setState({ highlightBackround: false });
+    }
+  }
+
+  scrollToLogRow = () => {
+    if (this.logLineRef.current && this.props.permalinkedRowId === this.props.row.uid) {
+      this.props.scrollIntoView(this.logLineRef.current);
+      this.setState({ highlightBackround: true });
+    } else {
+      this.setState({ highlightBackround: false });
+    }
+  };
+
   onPermalinkClick = async () => {
     if (this.props.onPermalinkClick) {
       await this.props.onPermalinkClick(this.props.row);
+      this.scrollToLogRow();
     }
   };
 
@@ -153,6 +183,7 @@ class UnThemedLogRow extends PureComponent<Props, State> {
     return (
       <>
         <tr
+          ref={this.logLineRef}
           className={logRowBackground}
           onClick={this.toggleDetails}
           onMouseEnter={this.onMouseEnter}

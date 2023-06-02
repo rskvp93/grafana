@@ -40,12 +40,17 @@ import {
   Themeable2,
   Collapse,
 } from '@grafana/ui';
+import appEvents from 'app/core/app_events';
 import { dedupLogRows, filterLogLevels } from 'app/core/logsModel';
 import store from 'app/core/store';
+import { createAndCopyShortLink } from 'app/core/utils/shortLinks';
+import { dispatch } from 'app/store/store';
+import { AbsoluteTimeEvent } from 'app/types/events';
 import { ExploreId } from 'app/types/explore';
 
 import { LogRows } from '../../logs/components/LogRows';
 import { LogRowContextModal } from '../../logs/components/log-context/LogRowContextModal';
+import { changePanelState } from '../state/explorePane';
 
 import { LogsMetaRow } from './LogsMetaRow';
 import LogsNavigation from './LogsNavigation';
@@ -87,6 +92,7 @@ interface Props extends Themeable2 {
   clearCache: () => void;
   eventBus: EventBus;
   panelState?: ExploreLogsPanelState;
+  scrollElement?: HTMLDivElement;
 }
 
 interface State {
@@ -343,6 +349,17 @@ class UnthemedLogs extends PureComponent<Props, State> {
     await createAndCopyShortLink(globalThis.location.href);
   };
 
+  scrollIntoView = (element: HTMLElement) => {
+    const { scrollElement } = this.props;
+
+    if (scrollElement) {
+      scrollElement.scroll({
+        behavior: 'smooth',
+        top: scrollElement.scrollTop + element.getBoundingClientRect().top - window.innerHeight / 2,
+      });
+    }
+  };
+
   checkUnescapedContent = memoizeOne((logRows: LogRowModel[]) => {
     return !!logRows.some((r) => r.hasUnescapedContent);
   });
@@ -570,6 +587,7 @@ class UnthemedLogs extends PureComponent<Props, State> {
                 onOpenContext={this.onOpenContext}
                 onPermalinkClick={this.onPermalinkClick}
                 permalinkedRowId={this.props.panelState?.id}
+                scrollIntoView={this.scrollIntoView}
               />
               {!loading && !hasData && !scanning && (
                 <div className={styles.noData}>
