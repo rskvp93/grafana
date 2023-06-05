@@ -229,6 +229,7 @@ class UnThemedLogRow extends PureComponent<Props, State> {
               onPermalinkClick={this.onPermalinkClick}
               app={app}
               styles={styles}
+              permalinkedRowId={this.props.permalinkedRowId}
             />
           )}
         </tr>

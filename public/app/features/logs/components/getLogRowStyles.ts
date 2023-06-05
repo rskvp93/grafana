@@ -86,6 +86,9 @@ export const getLogRowStyles = memoizeOne((theme: GrafanaTheme2) => {
           visibility: visible;
           z-index: 1;
         }
+        .log-row-menu-visible {
+          visibility: hidden;
+        }
 
         background: ${hoverBgColor};
       }
@@ -232,6 +235,7 @@ export const getLogRowStyles = memoizeOne((theme: GrafanaTheme2) => {
       margin-left: 0px;
     `,
     rowMenu: css`
+      label: rowMenu;
       display: flex;
       flex-wrap: nowrap;
       flex-direction: row;
@@ -283,6 +287,10 @@ export const getLogRowStyles = memoizeOne((theme: GrafanaTheme2) => {
       &:hover {
         background-color: ${theme.colors.background.primary};
       }
+    `,
+    hidden: css`
+      label: hidden;
+      visibility: hidden;
     `,
   };
 });

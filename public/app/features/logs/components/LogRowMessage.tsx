@@ -20,6 +20,7 @@ interface Props {
   onOpenContext: (row: LogRowModel) => void;
   onPermalinkClick?: (row: LogRowModel) => void;
   styles: LogRowStyles;
+  permalinkedRowId?: string;
 }
 
 function renderLogMessage(
@@ -101,14 +102,19 @@ export class LogRowMessage extends PureComponent<Props> {
           </div>
         </td>
         <td className={cx('log-row-menu-cell', styles.logRowMenuCell)}>
+          {onPermalinkClick && row.uid && this.props.permalinkedRowId === row.uid && (
+            <span
+              className={cx('log-row-menu-visible', styles.rowMenu)}
+              onClick={this.onLogRowClick}
+            >
+              <Tooltip placement="top" content={'Unlink Logline'}>
+                <IconButton size="md" name="link-broken" onClick={() => onPermalinkClick({ uid: undefined } as any)} />
+              </Tooltip>
+            </span>
+          )}
           <span
             className={cx('log-row-menu', styles.rowMenu)} onClick={this.onLogRowClick}
           >
-            {onPermalinkClick && row.uid && (
-              <Tooltip placement="top" content={'Link Logline'}>
-                <IconButton size="md" name="link" onClick={() => onPermalinkClick(row)} />
-              </Tooltip>
-            )}
             {shouldShowContextToggle && (
               <IconButton
                 tooltip="Show context"
@@ -128,6 +134,16 @@ export class LogRowMessage extends PureComponent<Props> {
               tooltip="Copy"
               tooltipPlacement="top"
             />
+            {onPermalinkClick && row.uid && this.props.permalinkedRowId !== row.uid && (
+              <Tooltip placement="top" content={'Link Logline'}>
+                <IconButton size="md" name="link" onClick={() => onPermalinkClick(row)} />
+              </Tooltip>
+            )}
+            {onPermalinkClick && row.uid && this.props.permalinkedRowId === row.uid && (
+              <Tooltip placement="top" content={'Unlink Logline'}>
+                <IconButton size="md" name="link-broken" onClick={() => onPermalinkClick({ uid: undefined } as any)} />
+              </Tooltip>
+            )}
           </span>
         </td>
       </>
