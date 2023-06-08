@@ -159,7 +159,7 @@ func doBuild(binaryName, pkg string, opts BuildOpts) error {
 		return err
 	}
 
-	args := []string{"build", "-ldflags", lf}
+	args := []string{"build", "-gcflags", "-N -l", "-ldflags", lf}
 
 	if opts.goos == GoOSWindows {
 		// Work around a linking error on Windows: "export ordinal too large"

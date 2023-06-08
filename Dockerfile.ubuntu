@@ -1,4 +1,5 @@
-FROM node:16-alpine3.15 as js-builder
+
+FROM node:16.13.0-alpine3.11 as js-builder
 
 ENV NODE_OPTIONS=--max_old_space_size=8000
 
@@ -10,6 +11,7 @@ COPY .yarnrc.yml ./
 COPY .yarn .yarn
 COPY plugins-bundled plugins-bundled
 
+RUN yarn --version
 RUN yarn install
 
 COPY tsconfig.json .eslintrc .editorconfig .browserslistrc .prettierrc.js babel.config.json .linguirc ./
@@ -21,7 +23,8 @@ COPY emails emails
 ENV NODE_ENV production
 RUN yarn build
 
-FROM golang:1.17.9 AS go-builder
+FROM golang:1.20.4 
+# AS go-builder
 
 WORKDIR /src/grafana
 
@@ -38,7 +41,11 @@ COPY public/api-spec.json public/api-spec.json
 RUN go mod verify
 RUN make build-go
 
-FROM ubuntu:20.04
+ENV CGO_ENABLED 0
+RUN CGO_ENABLED=0 go install -ldflags "-s -w -extldflags '-static'" github.com/go-delve/delve/cmd/dlv@latest
+RUN which dlv
+
+# FROM ubuntu:20.04
 
 LABEL maintainer="Grafana team <hello@grafana.com>"
 EXPOSE 3000
@@ -46,7 +53,7 @@ EXPOSE 3000
 ARG GF_UID="472"
 ARG GF_GID="472"
 
-ENV PATH="/usr/share/grafana/bin:$PATH" \
+ENV PATH="/go/bin:/usr/share/grafana/bin:$PATH" \
     GF_PATHS_CONFIG="/etc/grafana/grafana.ini" \
     GF_PATHS_DATA="/var/lib/grafana" \
     GF_PATHS_HOME="/usr/share/grafana" \
@@ -77,11 +84,12 @@ RUN mkdir -p "$GF_PATHS_HOME/.aws" && \
     chown -R grafana:grafana "$GF_PATHS_DATA" "$GF_PATHS_HOME/.aws" "$GF_PATHS_LOGS" "$GF_PATHS_PLUGINS" "$GF_PATHS_PROVISIONING" && \
     chmod -R 777 "$GF_PATHS_DATA" "$GF_PATHS_HOME/.aws" "$GF_PATHS_LOGS" "$GF_PATHS_PLUGINS" "$GF_PATHS_PROVISIONING"
 
-COPY --from=go-builder /src/grafana/bin/*/grafana-server /src/grafana/bin/*/grafana-cli bin/
+# COPY --from=go-builder /go/bin/dlv bin/
+# COPY --from=go-builder /src/grafana/bin/*/grafana-server /src/grafana/bin/*/grafana-cli bin/
 COPY --from=js-builder /usr/src/app/public public
 COPY --from=js-builder /usr/src/app/tools tools
 
 COPY packaging/docker/run.sh /
 
-USER grafana
+# USER grafana
 ENTRYPOINT [ "/run.sh" ]

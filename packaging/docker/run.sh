@@ -77,7 +77,7 @@ if [ ! -z "${GF_INSTALL_PLUGINS}" ]; then
   done
 fi
 
-exec grafana-server                                         \
+dlv --listen 0.0.0.0:4001 --log=true --log-output=debugger,debuglineerr,gdbwire,lldbout,rpc --accept-multiclient --headless --api-version 2 exec /src/grafana/bin/linux-amd64/grafana-server --                                        \
   --homepath="$GF_PATHS_HOME"                               \
   --config="$GF_PATHS_CONFIG"                               \
   --packaging=docker                                        \

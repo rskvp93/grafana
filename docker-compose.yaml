@@ -1,0 +1,33 @@
+version: "3"
+
+networks:
+  grafana:
+
+services:
+  grafana-oss:
+    image: my-grafana
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile.ubuntu
+    container_name: grafana-oss
+    user: root
+    privileged: true
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
+    extra_hosts:
+      - "host.docker.internal:192.168.2.133"
+    ports:
+      - 3000:3000
+      - 4001:4001
+    networks:
+      - grafana
+    # command: --config /var/lib/grafana/config.ini
+    volumes:
+        - ./packaging/docker/run.sh:/run.sh
+        # - ./:/src/grafana/
+    #   - ./data/grafana-oss:/var/lib/grafana
+    #   - ./config/config.ini:/var/lib/grafana/config.ini
+      # - ./plugins/grafana-k6-app:/var/lib/grafana/plugins/grafana-k6-app
+      # - ./plugins/github-datasource:/var/lib/grafana/plugins/github-datasource
